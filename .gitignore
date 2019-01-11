@@ -16,3 +16,5 @@ ios/.generated/
 ios/Flutter/Generated.xcconfig
 ios/Runner/GeneratedPluginRegistrant.*
 .flutter-plugins
+example/android/.settings/org.eclipse.buildship.core.prefs
+example/android/.project
