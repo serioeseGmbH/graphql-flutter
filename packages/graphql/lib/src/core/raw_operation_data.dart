@@ -30,7 +30,12 @@ class RawOperationData {
     // XXX there is a bug in the `graphql_parser` package, where this result might be
     // null event though the operation name is present in the document
     _operationName ??= getOperationName(document);
-    _operationName ??= 'UNNAMED/' + document.hashCode.toString();
+
+    // Commented this out because it fails with Apollo Server. 
+    // Commented the issue https://github.com/zino-app/graphql-flutter/issues/222#issuecomment-490273996  
+    // still waiting for a reaction.
+    //_operationName ??= 'UNNAMED/' + document.hashCode.toString();
+
     return _operationName;
   }
 
