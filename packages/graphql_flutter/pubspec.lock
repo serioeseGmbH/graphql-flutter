@@ -91,10 +91,12 @@ packages:
   graphql:
     dependency: "direct main"
     description:
-      name: graphql
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1-beta.4"
+      path: "packages/graphql"
+      ref: beta
+      resolved-ref: "6778b9cea9c7358763a67bd20acb84b574cfd0bc"
+      url: "git@github.com:serioeseGmbH/graphql-flutter.git"
+    source: git
+    version: "1.0.1-beta.7"
   graphql_parser:
     dependency: transitive
     description:
