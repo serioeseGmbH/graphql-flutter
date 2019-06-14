@@ -1,16 +1,18 @@
-# GraphQL Flutter 
+[![MIT License][license-badge]][license-link]
+[![All Contributors](https://img.shields.io/badge/all_contributors-31-orange.svg?style=flat-square)](#contributors)
+[![PRs Welcome][prs-badge]][prs-link]
+
+[![Star on GitHub][github-star-badge]][github-star-link]
+[![Watch on GitHub][github-watch-badge]][github-watch-link]
+[![Discord][discord-badge]][discord-link]
 
 [![Build Status][build-status-badge]][build-status-link]
 [![Coverage][coverage-badge]][coverage-link]
 [![version][version-badge]][package-link]
-[![MIT License][license-badge]][license-link]
-[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg)](#contributors)
-[![PRs Welcome][prs-badge]](http://makeapullrequest.com)
 
-[![Watch on GitHub](https://img.shields.io/github/watchers/zino-app/graphql-flutter.svg?style=flat&logo=github&colorB=deeppink&label=Watchers)](https://github.com/felangel/bloc)
-[![Star on GitHub](https://img.shields.io/github/stars/zino-app/graphql-flutter.svg?style=flat&logo=github&colorB=deeppink&label=Stars)](https://github.com/felangel/bloc)
+# GraphQL Flutter
 
-## Table of Contents 
+## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -28,14 +30,14 @@
 
 ## Installation
 
-First depend on the library by adding this to your packages `pubspec.yaml`:
+First, depends on the library by adding this to your packages `pubspec.yaml`:
 
 ```yaml
 dependencies:
   graphql_flutter: ^1.0.0
 ```
 
-Then, inside your Dart code you can import it.
+Now inside your Dart code, you can import it.
 
 ```dart
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -43,9 +45,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 ## Usage
 
-**If you're upgrading from 0.x.x**, checkout out the [Upgrade guide](./UPGRADE_GUIDE.md)
-
-To use the client it first needs to be initialized with an link and cache. For this example we will be using an `HttpLink` as our link and `InMemoryCache` as our cache. If your endpoint requires authentication you can concatenate the `AuthLink`, it resolves the credentials using a future, so you can authenticate asynchronously.
+To use the client it first needs to be initialized with a link and cache. For this example, we will be using an `HttpLink` as our link and `InMemoryCache` as our cache. If your endpoint requires authentication you can concatenate the `AuthLink`, it resolves the credentials using a future, so you can authenticate asynchronously.
 
 > For this example we will use the public GitHub API.
 
@@ -142,7 +142,7 @@ ValueNotifier<GraphQLClient> client = ValueNotifier(
 );
 ```
 
-`dataIdFromObject` is required and has no defaults. Our implementation is similar to apollo's, requiring a function to return a universally unique string or `null`. The predefined `typenameDataIdFromObject` we provide is similar to apollo's default:
+`dataIdFromObject` is required and has no defaults. Our implementation is similar to Apollo's, requiring a function to return a universally unique string or `null`. The predefined `typenameDataIdFromObject` we provide is similar to apollo's default:
 
 ```dart
 String typenameDataIdFromObject(Object object) {
@@ -155,17 +155,17 @@ String typenameDataIdFromObject(Object object) {
 }
 ```
 
-However note that **`graphql-flutter` does not inject \_\_typename into operations** the way apollo does, so if you aren't careful to request them in your query, this normalization scheme is not possible.
+However, note that **`graphql-flutter` does not inject \_\_typename into operations** the way Apollo does, so if you aren't careful to request them in your query, this normalization scheme is not possible.
 
-Unlike apollo, we don't have a real client side document parser and resolver, so **operations leveraging normalization can have additional fields not specified in the query**. There are a couple ideas for constraining this (leveraging `json_serializable`, or just implementing the resolver), but for now, the normalized cache uses a [`LazyCacheMap`](lib/src/cache/lazy_cache_map.dart), which wraps underlying data with a lazy denormalizer to allow for cyclical references. It has the same API as a normal `HashMap`, but is currently a bit hard to debug with, as a descriptive debug representation is currently unavailable.
+Unlike Apollo, we don't have a real client-side document parser and resolver, so **operations leveraging normalization can have additional fields not specified in the query**. There are a couple of ideas for constraining this (leveraging `json_serializable`, or just implementing the resolver), but for now, the normalized cache uses a [`LazyCacheMap`](lib/src/cache/lazy_cache_map.dart), which wraps underlying data with a lazy denormalizer to allow for cyclical references. It has the same API as a normal `HashMap`, but is currently a bit hard to debug with, as a descriptive debug representation is currently unavailable.
 
-NOTE: A `LazyCacheMap` can be modified, but this does not effect the underlying entities in the cache. If references are added to the map, they will still dereference against the cache normally.
+NOTE: A `LazyCacheMap` can be modified, but this does not affect the underlying entities in the cache. If references are added to the map, they will still dereference against the cache normally.
 
 #### Optimism
 
 The `OptimisticCache` allows for optimistic mutations by passing an `optimisticResult` to `RunMutation`. It will then call `update(Cache cache, QueryResult result)` twice (once eagerly with `optimisticResult`), and rebroadcast all queries with the optimistic cache. You can tell which entities in the cache are optimistic through the `.isOptimistic` flag on `LazyCacheMap`, though note that **this is only the case for optimistic entities and not their containing operations/maps**.
 
-`QueryResults` also have an `optimistic` flag, but I would recommend looking at the data itself, as many situations make it unusable (such as toggling mutations like in the example below). [Mutation usage examples](#mutations-with-optimism)
+`QueryResults` also, have an `optimistic` flag, but I would recommend looking at the data itself, as many situations make it unusable (such as toggling mutations like in the example below). [Mutation usage examples](#mutations-with-optimism)
 
 ### Queries
 
@@ -173,7 +173,7 @@ Creating a query is as simple as creating a multiline string:
 
 ```dart
 String readRepositories = """
-  query ReadRepositories(\$nRepositories) {
+  query ReadRepositories(\$nRepositories: Int!) {
     viewer {
       repositories(last: \$nRepositories) {
         nodes {
@@ -240,7 +240,7 @@ String addStar = """
 """;
 ```
 
-The syntax for mutations is fairly similar to that of a query. The only diffence is that the first argument of the builder function is a mutation function. Just call it to trigger the mutations (Yeah we deliberately stole this from react-apollo.)
+The syntax for mutations is fairly similar to that of a query. The only difference is that the first argument of the builder function is a mutation function. Just call it to trigger the mutations (Yeah we deliberately stole this from react-apollo.)
 
 ```dart
 ...
@@ -408,7 +408,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 ### GraphQL Consumer
 
-You can always access the client directly from the `GraphQLProvider` but to make it even easier you can also use the `GraphQLConsumer` widget.
+You can always access the client directly from the `GraphQLProvider` but to make it even easier you can also use them `GraphQLConsumer` widget.
 
 ```dart
   ...
@@ -426,7 +426,7 @@ You can always access the client directly from the `GraphQLProvider` but to make
   ...
 ```
 
-### Graphql Upload
+### GraphQL Upload
 
 We support GraphQL Upload spec as proposed at
 https://github.com/jaydenseric/graphql-multipart-request-spec
@@ -475,17 +475,19 @@ This is currently our roadmap, please feel free to request additions/changes.
 | Client state management |    🔜    |
 | Modularity              |    🔜    |
 
-[build-status-badge]: https://api.cirrus-ci.com/github/truongsinh/graphql-flutter.svg
-[build-status-link]: https://cirrus-ci.com/github/truongsinh/dart-uuid/master
-[coverage-badge]: https://codecov.io/gh/truongsinh/graphql-flutter/branch/master/graph/badge.svg
-[coverage-link]: https://codecov.io/gh/truongsinh/graphql-flutter
-[version-badge]: https://img.shields.io/pub/v/graphql_flutter.svg
+[build-status-badge]: https://img.shields.io/circleci/build/github/zino-app/graphql-flutter.svg?style=flat-square
+[build-status-link]: https://circleci.com/gh/zino-app/graphql-flutter
+[coverage-badge]: https://img.shields.io/codecov/c/github/zino-app/graphql-flutter.svg?style=flat-square
+[coverage-link]: https://codecov.io/gh/zino-app/graphql-flutter
+[version-badge]: https://img.shields.io/pub/v/graphql_flutter.svg?style=flat-square
 [package-link]: https://pub.dartlang.org/packages/graphql_flutter
-[license-badge]: https://img.shields.io/github/license/zino-app/graphql-flutter.svg
+[license-badge]: https://img.shields.io/github/license/zino-app/graphql-flutter.svg?style=flat-square
 [license-link]: https://github.com/zino-app/graphql-flutter/blob/master/LICENSE
-[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
-[prs]: http://makeapullrequest.com
-[github-watch-badge]: https://img.shields.io/github/watchers/zino-app/graphql-flutter.svg?style=social
-[github-watch]: https://github.com/zino-app/graphql-flutter/watchers
-[github-star-badge]: https://img.shields.io/github/stars/zino-app/graphql-flutter.svg?style=social
-[github-star]: https://github.com/zino-app/graphql-flutter/stargazers
+[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+[prs-link]: http://makeapullrequest.com
+[github-watch-badge]: https://img.shields.io/github/watchers/zino-app/graphql-flutter.svg?style=flat-square&logo=github&logoColor=ffffff
+[github-watch-link]: https://github.com/zino-app/graphql-flutter/watchers
+[github-star-badge]: https://img.shields.io/github/stars/zino-app/graphql-flutter.svg?style=flat-square&logo=github&logoColor=ffffff
+[github-star-link]: https://github.com/zino-app/graphql-flutter/stargazers
+[discord-badge]: https://img.shields.io/discord/559455668810153989.svg?style=flat-square&logo=discord&logoColor=ffffff
+[discord-link]: https://discord.gg/tXTtBfC

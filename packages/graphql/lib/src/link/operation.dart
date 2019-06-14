@@ -26,7 +26,9 @@ class Operation extends RawOperationData {
 
   /// Sets the context of an operation by merging the new context with the old one.
   void setContext(Map<String, dynamic> next) {
-    _context.addAll(next);
+    if (next != null) {
+      _context.addAll(next);
+    }
   }
 
   Map<String, dynamic> getContext() {
@@ -36,7 +38,6 @@ class Operation extends RawOperationData {
     return result;
   }
 
-  // operationName should never be null, but leaving this check in anyways
   bool get isSubscription =>
       operationName != null &&
       document.contains(RegExp(r'.*?subscription ' + operationName));

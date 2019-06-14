@@ -5,9 +5,11 @@ import 'package:graphql/internal.dart';
 
 import 'package:graphql_flutter/src/widgets/graphql_provider.dart';
 
+typedef BoolCallback = bool Function();
+
 typedef QueryBuilder = Widget Function(
   QueryResult result, {
-  VoidCallback refetch,
+  BoolCallback refetch,
 });
 
 /// Builds a [Query] widget based on the a given set of [QueryOptions]
@@ -66,7 +68,6 @@ class QueryState extends State<Query> {
   void didUpdateWidget(Query oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // TODO @micimize - investigate why/if this was causing issues
     if (!observableQuery.options.areEqualTo(_options)) {
       _initQuery();
     }
@@ -81,9 +82,7 @@ class QueryState extends State<Query> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QueryResult>(
-      initialData: QueryResult(
-        loading: true,
-      ),
+      initialData: observableQuery?.latestResult ?? QueryResult(loading: true),
       stream: observableQuery.stream,
       builder: (
         BuildContext buildContext,
